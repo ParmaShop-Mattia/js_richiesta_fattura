@@ -1,3 +1,4 @@
+console.log("Test: lo script è stato caricato ed eseguito correttamente.");
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Caricamento script...");
 
