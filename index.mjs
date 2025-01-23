@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Selezioniamo il form del carrello
-  const cartForm = document.querySelector("form[action='/cart']");
+  // Attendi che il contenitore del carrello sia presente nel DOM
+  const checkCartReady = setInterval(() => {
+    const cartForm = document.querySelector(
+      "form[action='/cart'], .cart-items"
+    );
+    if (cartForm) {
+      clearInterval(checkCartReady);
 
-  if (cartForm) {
-    // Creiamo il campo "Desideri la fattura?"
-    const invoiceFieldset = document.createElement("fieldset");
-    invoiceFieldset.innerHTML = `
+      // Aggiungi i tuoi campi personalizzati
+      const invoiceFieldset = document.createElement("fieldset");
+      invoiceFieldset.innerHTML = `
         <legend>Desideri la fattura?</legend>
         <label>
           <input type="radio" name="attributes[Desideri la fattura?]" value="No" checked>
@@ -27,23 +31,22 @@ document.addEventListener("DOMContentLoaded", function () {
           </label>
         </div>
       `;
+      cartForm.appendChild(invoiceFieldset);
 
-    // Aggiungiamo il campo al form
-    cartForm.appendChild(invoiceFieldset);
+      // Gestisci la visibilità dei campi dinamicamente
+      cartForm.addEventListener("change", function (event) {
+        if (event.target.name === "attributes[Desideri la fattura?]") {
+          const showFields = event.target.value === "Si";
+          document.getElementById("invoice-fields").style.display = showFields
+            ? "block"
+            : "none";
 
-    // Gestiamo la logica di mostrare/nascondere i campi
-    cartForm.addEventListener("change", function (event) {
-      if (event.target.name === "attributes[Desideri la fattura?]") {
-        const showFields = event.target.value === "Si";
-        document.getElementById("invoice-fields").style.display = showFields
-          ? "block"
-          : "none";
-
-        // Mostrare Codice SDI / PEC solo per clienti italiani
-        const country = document.documentElement.lang; // Usa il valore del tag <html lang="...">
-        document.getElementById("sdi-code-label").style.display =
-          showFields && country === "it" ? "block" : "none";
-      }
-    });
-  }
+          // Mostra il campo SDI solo per clienti italiani
+          const country = document.documentElement.lang;
+          document.getElementById("sdi-code-label").style.display =
+            showFields && country === "it" ? "block" : "none";
+        }
+      });
+    }
+  }, 500);
 });
