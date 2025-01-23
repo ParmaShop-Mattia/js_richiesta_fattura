@@ -1,3 +1,4 @@
+console.log("Lo script è stato caricato ed eseguito");
 document.addEventListener("DOMContentLoaded", function () {
   // Attendi che il contenitore del carrello sia presente nel DOM
   const checkCartReady = setInterval(() => {
